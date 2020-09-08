@@ -1,0 +1,9 @@
+{
+    "name": "repos",
+    "devDependencies": {
+        "@types/node": "^10.0.0"
+    },
+    "dependencies": {
+        "@pulumi/github": "= 1.4.0"
+    }
+}
