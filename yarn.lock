@@ -62,10 +62,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@pulumi/github@= 1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/github/-/github-1.4.0.tgz#5b6145cdff64c01cda0361912fddaca31e6fd621"
-  integrity sha512-LDh0z4VZBY+I9ajxReU+hCuYpN1q7RD5oFD4UbfgY0B5U7X3Xwfo2D3G+lI18fIYVrtDoTMTFz2m19b5CSskJg==
+"@pulumi/github@= 1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@pulumi/github/-/github-1.5.0.tgz#e619c0663ee044e6b59cf68ffb88fe33e4a8a2b7"
+  integrity sha512-h9xt48nqOTsh/O3CryQ+OsdcwogvCODC0TVlO0HG6xHQugsuJBwVPIEHVKIMsqbkEoiVisUPsWRNXzXLJ4tqvQ==
   dependencies:
     "@pulumi/pulumi" "^2.0.0"
 
