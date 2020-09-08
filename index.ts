@@ -14,7 +14,7 @@ repos.map(repo => {
   repositories.push(new github.Repository(repo, {
     visibility: 'public',
     name: repo
-  }, { provider }))
+  }, { provider: provider.getProvider('github') }))
 })
 
 export { repositories }
