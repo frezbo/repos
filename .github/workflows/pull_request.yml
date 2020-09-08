@@ -9,12 +9,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Lint
+      - name: Unit tests
+        run: yarn install && yarn lint && yarn test
+      - name: Super Linter
         uses: github/super-linter@v3.10.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker://pulumi/actions
-        run: yarn install && yarn lint && yarn test
         with:
           args: preview
         env:
