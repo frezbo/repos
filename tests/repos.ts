@@ -20,9 +20,9 @@ describe('Repositories', () => {
     pulumi.all([repo.name, repo.visibility]).apply(([name, visibility]) => {
       it(`${name} must be public`, (done) => {
         if (visibility === 'public') {
-            done()
+          done()
         } else {
-            done(new Error(`visibilty should be public for ${name}`))
+          done(new Error(`visibilty should be public for ${name}`))
         }
       })
     })
