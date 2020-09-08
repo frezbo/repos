@@ -16,7 +16,6 @@ import * as repos from '../index'
 
 describe('Repositories', () => {
   const repositories = repos.repositories
-  const visibilities: any = []
   repositories.map(repo => {
     pulumi.all([repo.name, repo.visibility]).apply(([name, visibility]) => {
       it(`${name} must be public`, (done) => {
