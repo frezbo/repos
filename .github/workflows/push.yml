@@ -2,7 +2,7 @@ name: Pulumi
 on:
   push:
     branches:
-      - $default-branch
+      - main
 jobs:
   up:
     name: Update
