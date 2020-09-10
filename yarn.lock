@@ -83,7 +83,7 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@pulumi/github@= 2.0.0":
+"@pulumi/github@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@pulumi/github/-/github-2.0.0.tgz#410cba895ddffc46a5584aef83c51c92cfa2a26e"
   integrity sha512-8W3jLa3sQzpY019kMk3ra+4L/QadmShey9GCfnt61SqEvgtt9n7ydlCgiVnOU1tovysRa0/uevkPELBGgik1kA==
