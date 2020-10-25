@@ -5,7 +5,8 @@ const ghProvider = new github.Provider('github', { token: process.env.GITHUB_TOK
 const repos = [
   { name: 'resume', description: 'Repository to hold personal Resume' },
   { name: 'repos', description: 'Manage personal repositories' },
-  { name: 'rpminfo', description: 'Retrieve RPM packages list from yum repo' }
+  { name: 'rpminfo', description: 'Retrieve RPM packages list from yum repo' },
+  { name: 'infra-dns', description: 'Project to manage personal DNS' }
 ]
 
 const repositories: github.Repository[] = []
@@ -32,3 +33,4 @@ repos.map(repo => {
 })
 
 export { repositories }
+
