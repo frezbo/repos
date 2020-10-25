@@ -11,6 +11,7 @@ const repos = [
 ]
 
 const repositories: github.Repository[] = []
+const secrets: github.ActionsSecret[] = []
 
 repos.map(repo => {
   repositories.push(new github.Repository(repo.name, {
@@ -35,11 +36,11 @@ repos.map(repo => {
     if (envValue === undefined) {
       envValue = ""
     }
-    new github.ActionsSecret(secret, {
+    secrets.push(new github.ActionsSecret(secret, {
       plaintextValue: envValue,
       repository: repo.name,
       secretName: secret
-    })
+    }))
   })
 })
 
