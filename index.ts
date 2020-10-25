@@ -34,7 +34,7 @@ repos.map(repo => {
   repo.secrets.map(secret => {
     let envValue
     if (secret === 'PULUMI_ACCESS_TOKEN') {
-      envValue = process.env.secret
+      envValue = process.env.PULUMI_ACCESS_TOKEN
     } else {
       envValue = process.env[`${repo.name.replace('-', '_').toUpperCase()}_${secret}`]
     }
