@@ -7,7 +7,7 @@ const repos = [
   { name: 'resume', description: 'Repository to hold personal Resume', secrets: [] },
   { name: 'repos', description: 'Manage personal repositories', secrets: [] },
   { name: 'rpminfo', description: 'Retrieve RPM packages list from yum repo', secrets: [] },
-  { name: 'infra-dns', description: 'Project to manage personal DNS', secrets: [ 'CLOUDFLARE_API_TOKEN' ] }
+  { name: 'infra-dns', description: 'Project to manage personal DNS', secrets: [ 'CLOUDFLARE_API_TOKEN', 'PULUMI_ACCESS_TOKEN' ] }
 ]
 
 const repositories: github.Repository[] = []
@@ -32,7 +32,12 @@ repos.map(repo => {
     isTemplate: false
   }, { provider: ghProvider }))
   repo.secrets.map(secret => {
-    let envValue = process.env[`${repo.name.replace('-', '_').toUpperCase()}_${secret}`]
+    let envValue
+    if (secret == 'PULUMI_ACCESS_TOKEN') {
+      envValue = process.env.secret
+    } else {
+      envValue = process.env[`${repo.name.replace('-', '_').toUpperCase()}_${secret}`]
+    }
     if (envValue === undefined) {
       envValue = ""
     }
