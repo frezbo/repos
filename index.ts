@@ -33,7 +33,7 @@ repos.map(repo => {
   }, { provider: ghProvider }))
   repo.secrets.map(secret => {
     let envValue
-    if (secret == 'PULUMI_ACCESS_TOKEN') {
+    if (secret === 'PULUMI_ACCESS_TOKEN') {
       envValue = process.env.secret
     } else {
       envValue = process.env[`${repo.name.replace('-', '_').toUpperCase()}_${secret}`]
