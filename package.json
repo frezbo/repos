@@ -11,7 +11,7 @@
         "lint": "tslint -p ."
     },
     "dependencies": {
-        "@pulumi/github": "^2.1.0",
+        "@pulumi/github": "^2.2.0",
         "mocha": "^8.2.0",
         "ts-node": "^9.0.0"
     }
