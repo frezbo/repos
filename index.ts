@@ -1,5 +1,4 @@
 import * as github from '@pulumi/github'
-import { env } from 'process'
 
 const ghProvider = new github.Provider('github', { token: process.env.GITHUB_TOKEN, owner: 'frezbo' })
 
@@ -12,6 +11,7 @@ const repos = [
 
 const repositories: github.Repository[] = []
 const secrets: github.ActionsSecret[] = []
+const branchProtections: github.BranchProtection[] = []
 
 repos.map(repo => {
   repositories.push(new github.Repository(repo.name, {
@@ -47,6 +47,12 @@ repos.map(repo => {
       secretName: secret
     }))
   })
+  branchProtections.push(new github.BranchProtection(repo.name, {
+    pattern: 'main',
+    repositoryId: repo.name,
+    enforceAdmins: true,
+    requireSignedCommits: true,
+  }))
 })
 
 export { repositories }
