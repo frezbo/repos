@@ -9,8 +9,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Unit tests
-        run: yarn install && yarn lint && yarn test
       - uses: docker://pulumi/actions
         with:
           args: preview
