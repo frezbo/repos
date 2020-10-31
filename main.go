@@ -86,10 +86,9 @@ func main() {
 				EnforceAdmins:        pulumi.Bool(true),
 				Pattern:              pulumi.String(defaultBranch),
 				RepositoryId:         repo.NodeId,
-				RequireSignedCommits: pulumi.Bool(true),gs
+				RequireSignedCommits: pulumi.Bool(true),
 				RequiredPullRequestReviews: github.BranchProtectionRequiredPullRequestReviewArray{github.BranchProtectionRequiredPullRequestReviewArgs{
 					DismissStaleReviews:          pulumi.Bool(true),
-					RequireCodeOwnerReviews:      pulumi.Bool(true),
 					RequiredApprovingReviewCount: pulumi.Int(1),
 				}},
 				RequiredStatusChecks: github.BranchProtectionRequiredStatusCheckArray{github.BranchProtectionRequiredStatusCheckArgs{
