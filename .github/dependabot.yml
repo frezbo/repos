@@ -7,10 +7,10 @@ updates:
     labels:
       - "github-actions"
       - "dependencies"
-  - package-ecosystem: "npm"
+  - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
     labels:
-      - "npm"
+      - "gomod"
       - "dependencies"
