@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pulumi/pulumi-github/sdk/go/github"
+	"github.com/pulumi/pulumi-github/sdk/v2/go/github"
 	"github.com/pulumi/pulumi/sdk/v2/go/pulumi"
 )
 
@@ -17,6 +17,7 @@ type repository struct {
 
 const (
 	defaultBranch         = "main"
+	repoVisibility        = "public"
 	pulumiTokenEnvVarName = "PULUMI_ACCESS_TOKEN"
 )
 
@@ -57,7 +58,7 @@ func main() {
 				DeleteBranchOnMerge: pulumi.Bool(true),
 				Description:         pulumi.String(repository.Description),
 				Name:                pulumi.String(repository.Name),
-				Private:             pulumi.Bool(false),
+				Visibility:          pulumi.String(repoVisibility),
 				HasDownloads:        pulumi.Bool(true),
 				HasIssues:           pulumi.Bool(true),
 				HasProjects:         pulumi.Bool(true),
@@ -81,13 +82,18 @@ func main() {
 				}
 			}
 			_, err = github.NewBranchProtection(ctx, repository.Name, &github.BranchProtectionArgs{
-				Branch:               pulumi.String(defaultBranch),
 				EnforceAdmins:        pulumi.Bool(true),
-				Repository:           pulumi.String(repository.Name),
+				Pattern:              pulumi.String(defaultBranch),
+				RepositoryId:         pulumi.String(repository.Name),
 				RequireSignedCommits: pulumi.Bool(true),
-				RequiredStatusChecks: github.BranchProtectionRequiredStatusChecksArgs{
+				RequiredPullRequestReviews: github.BranchProtectionRequiredPullRequestReviewArray{github.BranchProtectionRequiredPullRequestReviewArgs{
+					DismissStaleReviews: pulumi.Bool(true),
+					// RequireCodeOwnerReviews:      pulumi.Bool(true),
+					RequiredApprovingReviewCount: pulumi.Int(1),
+				}},
+				RequiredStatusChecks: github.BranchProtectionRequiredStatusCheckArray{github.BranchProtectionRequiredStatusCheckArgs{
 					Strict: pulumi.Bool(true),
-				},
+				}},
 			})
 			if err != nil {
 				return err
