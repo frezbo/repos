@@ -46,59 +46,70 @@ var repositories = []repository{
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		outputs := pulumi.StringArray{}
-		for _, repository := range repositories {
-			repo, err := github.NewRepository(ctx, repository.Name, &github.RepositoryArgs{
-				AllowMergeCommit:    pulumi.Bool(true),
-				AllowRebaseMerge:    pulumi.Bool(true),
-				AllowSquashMerge:    pulumi.Bool(true),
-				Archived:            pulumi.Bool(false),
-				AutoInit:            pulumi.Bool(false),
-				DefaultBranch:       pulumi.String(defaultBranch),
-				DeleteBranchOnMerge: pulumi.Bool(true),
-				Description:         pulumi.String(repository.Description),
-				Name:                pulumi.String(repository.Name),
-				Visibility:          pulumi.String(repoVisibility),
-				HasDownloads:        pulumi.Bool(true),
-				HasIssues:           pulumi.Bool(true),
-				HasProjects:         pulumi.Bool(true),
-				HasWiki:             pulumi.Bool(true),
-				IsTemplate:          pulumi.Bool(false),
-				VulnerabilityAlerts: pulumi.BoolPtr(true),
-			})
-			if err != nil {
-				return err
-			}
-			outputs = append(outputs, repo.SshCloneUrl)
-			if repository.Secrets != nil {
-				for _, secretEnv := range repository.Secrets {
-					_, err := github.NewActionsSecret(ctx, secretEnv, &github.ActionsSecretArgs{
-						PlaintextValue: pulumi.String(secretEnvFromRepo(repository.Name, secretEnv)),
-						Repository:     pulumi.String(repository.Name),
-						SecretName:     pulumi.String(secretEnv),
-					})
-					if err != nil {
-						return err
-					}
-				}
-			}
-			_, err = github.NewBranchProtection(ctx, repository.Name, &github.BranchProtectionArgs{
-				EnforceAdmins:        pulumi.Bool(true),
-				Pattern:              pulumi.String(defaultBranch),
-				RepositoryId:         repo.NodeId,
-				RequireSignedCommits: pulumi.Bool(true),
-				RequiredStatusChecks: github.BranchProtectionRequiredStatusCheckArray{github.BranchProtectionRequiredStatusCheckArgs{
-					Strict: pulumi.Bool(true),
-				}},
-			})
-			if err != nil {
-				return err
-			}
+		repos, err := createRepositories(ctx)
+		if err != nil {
+			return err
 		}
-
-		ctx.Export("sshCloneURLs", outputs)
+		var sshCloneURLs = pulumi.StringArray{}
+		for _, repo := range repos {
+			sshCloneURLs = append(sshCloneURLs, repo.SshCloneUrl)
+		}
+		ctx.Export("sshCloneURLs", sshCloneURLs)
 		return nil
 	})
+}
+
+func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
+	outputs := []*github.Repository{}
+	for _, repository := range repositories {
+		repo, err := github.NewRepository(ctx, repository.Name, &github.RepositoryArgs{
+			AllowMergeCommit:    pulumi.Bool(true),
+			AllowRebaseMerge:    pulumi.Bool(true),
+			AllowSquashMerge:    pulumi.Bool(true),
+			Archived:            pulumi.Bool(false),
+			AutoInit:            pulumi.Bool(false),
+			DefaultBranch:       pulumi.String(defaultBranch),
+			DeleteBranchOnMerge: pulumi.Bool(true),
+			Description:         pulumi.String(repository.Description),
+			Name:                pulumi.String(repository.Name),
+			Visibility:          pulumi.String(repoVisibility),
+			HasDownloads:        pulumi.Bool(true),
+			HasIssues:           pulumi.Bool(true),
+			HasProjects:         pulumi.Bool(true),
+			HasWiki:             pulumi.Bool(true),
+			IsTemplate:          pulumi.Bool(false),
+			VulnerabilityAlerts: pulumi.BoolPtr(true),
+		})
+		if err != nil {
+			return nil, err
+		}
+		outputs = append(outputs, repo)
+		if repository.Secrets != nil {
+			for _, secretEnv := range repository.Secrets {
+				_, err := github.NewActionsSecret(ctx, secretEnv, &github.ActionsSecretArgs{
+					PlaintextValue: pulumi.String(secretEnvFromRepo(repository.Name, secretEnv)),
+					Repository:     pulumi.String(repository.Name),
+					SecretName:     pulumi.String(secretEnv),
+				})
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+		_, err = github.NewBranchProtection(ctx, repository.Name, &github.BranchProtectionArgs{
+			EnforceAdmins:        pulumi.Bool(true),
+			Pattern:              pulumi.String(defaultBranch),
+			RepositoryId:         repo.NodeId,
+			RequireSignedCommits: pulumi.Bool(true),
+			RequiredStatusChecks: github.BranchProtectionRequiredStatusCheckArray{github.BranchProtectionRequiredStatusCheckArgs{
+				Strict: pulumi.Bool(true),
+			}},
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return outputs, nil
 }
 
 func secretEnvFromRepo(repo string, secret string) string {
