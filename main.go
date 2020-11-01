@@ -102,6 +102,9 @@ func main() {
 }
 
 func secretEnvFromRepo(repo string, secret string) string {
+	if secret == pulumiTokenEnvVarName {
+		return os.Getenv(pulumiTokenEnvVarName)
+	}
 	var repoNameUpper = strings.ToUpper(strings.ReplaceAll(repo, "-", "_"))
 	secretFromEnv := os.Getenv(fmt.Sprintf("%s_%s", repoNameUpper, secret))
 	return secretFromEnv
