@@ -42,6 +42,14 @@ var repositories = []repository{
 			"PULUMI_ACCESS_TOKEN",
 		},
 	},
+	{
+		Name:        "infra-do",
+		Description: "Project to manage DigitalOcean Resources",
+		Secrets: []string{
+			"DIGITALOCEAN_TOKEN",
+			"PULUMI_ACCESS_TOKEN",
+		},
+	},
 }
 
 func main() {
@@ -86,7 +94,8 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 		outputs = append(outputs, repo)
 		if repository.Secrets != nil {
 			for _, secretEnv := range repository.Secrets {
-				_, err := github.NewActionsSecret(ctx, secretEnv, &github.ActionsSecretArgs{
+				secretName := fmt.Sprintf("%s-%s", repository.Name, secretEnv)
+				_, err := github.NewActionsSecret(ctx, secretName, &github.ActionsSecretArgs{
 					PlaintextValue: pulumi.String(secretEnvFromRepo(repository.Name, secretEnv)),
 					Repository:     pulumi.String(repository.Name),
 					SecretName:     pulumi.String(secretEnv),
