@@ -42,6 +42,14 @@ var repositories = []repository{
 			"PULUMI_ACCESS_TOKEN",
 		},
 	},
+	{
+		Name:        "infra-do",
+		Description: "Project to manage DigitalOcean Resources",
+		Secrets: []string{
+			"DIGITALOCEAN_TOKEN",
+			"PULUMI_ACCESS_TOKEN",
+		},
+	},
 }
 
 func main() {
