@@ -50,6 +50,13 @@ var repositories = []repository{
 			"PULUMI_ACCESS_TOKEN",
 		},
 	},
+	{
+		Name:        "docker-actions-test",
+		Description: "Project to test Multi-Arch docker builds and push to GHCR",
+		Secrets: []string{
+			"GHCR_ACCESS_TOKEN",
+		},
+	},
 }
 
 func main() {
