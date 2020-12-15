@@ -11,6 +11,8 @@ jobs:
           fetch-depth: 1
       - name: Unit tests
         run: go test -timeout 30s github.com/frezbo/repos
+        env:
+          PERSONAL_ACCESS_TOKEN: "dummy-token"
       - uses: pulumi/actions@v1
         with:
           command: preview
