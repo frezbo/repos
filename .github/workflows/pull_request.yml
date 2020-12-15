@@ -11,12 +11,15 @@ jobs:
           fetch-depth: 1
       - name: Unit tests
         run: go test -timeout 30s github.com/frezbo/repos
-      - uses: docker://pulumi/actions
+      - uses: pulumi/actions@v1
         with:
-          args: preview
+          command: preview
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           INFRA_DNS_CLOUDFLARE_API_TOKEN: ${{ secrets.INFRA_DNS_CLOUDFLARE_API_TOKEN }}
           INFRA_DO_DIGITALOCEAN_TOKEN: ${{ secrets.INFRA_DO_DIGITALOCEAN_TOKEN }}
-          PULUMI_CI: pr
+          DOCKER_ACTIONS_TEST_GHCR_ACCESS_TOKEN: ${{ secrets.DOCKER_ACTIONS_TEST_GHCR_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IS_PR_WORKFLOW: true
+          COMMENT_ON_PR: 1

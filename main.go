@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -75,6 +76,17 @@ func main() {
 }
 
 func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
+	githubAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
+	if githubAccessToken == "" {
+		return nil, errors.New("PERSONAL_ACCESS_TOKEN environment variable not set")
+	}
+	provider, err := github.NewProvider(ctx, "github", &github.ProviderArgs{
+		Owner: pulumi.String("frezbo"),
+		Token: pulumi.String(githubAccessToken),
+	})
+	if err != nil {
+		return nil, err
+	}
 	outputs := []*github.Repository{}
 	for _, repository := range repositories {
 		repo, err := github.NewRepository(ctx, repository.Name, &github.RepositoryArgs{
@@ -94,7 +106,7 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 			HasWiki:             pulumi.Bool(true),
 			IsTemplate:          pulumi.Bool(false),
 			VulnerabilityAlerts: pulumi.BoolPtr(true),
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +118,7 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 					PlaintextValue: pulumi.String(secretEnvFromRepo(repository.Name, secretEnv)),
 					Repository:     pulumi.String(repository.Name),
 					SecretName:     pulumi.String(secretEnv),
-				})
+				}, pulumi.Provider(provider))
 				if err != nil {
 					return nil, err
 				}
@@ -120,7 +132,7 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 			RequiredStatusChecks: github.BranchProtectionRequiredStatusCheckArray{github.BranchProtectionRequiredStatusCheckArgs{
 				Strict: pulumi.Bool(true),
 			}},
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return nil, err
 		}
