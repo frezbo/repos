@@ -58,6 +58,10 @@ var repositories = []repository{
 			"GHCR_ACCESS_TOKEN",
 		},
 	},
+	{
+		Name:        "openfaas-template-static",
+		Description: "OpenFaaS template to serve static files",
+	},
 }
 
 func main() {
