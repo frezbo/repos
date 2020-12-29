@@ -62,6 +62,10 @@ var repositories = []repository{
 		Name:        "openfaas-template-static",
 		Description: "OpenFaaS template to serve static files",
 	},
+	{
+		Name:        "ansible-workstation",
+		Description: "Manage workstation configuration",
+	},
 }
 
 func main() {
