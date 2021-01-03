@@ -66,6 +66,10 @@ var repositories = []repository{
 		Name:        "ansible-workstation",
 		Description: "Manage workstation configuration",
 	},
+	{
+		Name:        "rss-feeds",
+		Description: "RSS feed manager for mattermost RSS plugin",
+	},
 }
 
 func main() {
