@@ -137,7 +137,7 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 			}
 		}
 		_, err = github.NewBranchProtection(ctx, repository.Name, &github.BranchProtectionArgs{
-			EnforceAdmins:        pulumi.Bool(true),
+			EnforceAdmins:        pulumi.Bool(false),
 			Pattern:              pulumi.String(defaultBranch),
 			RepositoryId:         repo.NodeId,
 			RequireSignedCommits: pulumi.Bool(true),
