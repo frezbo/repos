@@ -70,6 +70,13 @@ var repositories = []repository{
 		Name:        "rss-feeds",
 		Description: "RSS feed manager for mattermost RSS plugin",
 	},
+	{
+		Name:        "dockerfiles",
+		Description: "Leaner and more secure container images for personal use",
+		Secrets: []string{
+			"GHCR_ACCESS_TOKEN",
+		},
+	},
 }
 
 func main() {
