@@ -4,13 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    labels:
-      - "github-actions"
-      - "dependencies"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
-    labels:
-      - "gomod"
-      - "dependencies"
