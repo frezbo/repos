@@ -1,6 +1,6 @@
 module github.com/frezbo/repos
 
-go 1.15
+go 1.16
 
 require (
 	github.com/pulumi/pulumi-github/sdk/v2 v2.2.0
