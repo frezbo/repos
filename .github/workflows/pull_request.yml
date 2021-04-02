@@ -10,6 +10,8 @@ jobs:
         with:
           fetch-depth: 1
       - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
       - name: Unit tests
         run: go version && go test -timeout 30s github.com/frezbo/repos
         env:
