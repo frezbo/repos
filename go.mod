@@ -4,6 +4,6 @@ go 1.16
 
 require (
 	github.com/pulumi/pulumi-github/sdk/v2 v2.2.0
-	github.com/pulumi/pulumi/sdk/v2 v2.24.1
+	github.com/pulumi/pulumi/sdk/v2 v2.25.2
 	github.com/stretchr/testify v1.7.0
 )
