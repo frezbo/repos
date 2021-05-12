@@ -16,7 +16,7 @@ jobs:
         run: go version && go test -timeout 30s github.com/frezbo/repos
         env:
           PERSONAL_ACCESS_TOKEN: "dummy-token"
-      - uses: pulumi/actions@v1.2.0
+      - uses: pulumi/actions@v3
         with:
           command: preview
         env:
