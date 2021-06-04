@@ -130,8 +130,8 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 		}
 		_, err = github.NewBranchDefault(ctx, repository.Name, &github.BranchDefaultArgs{
 			Branch:     pulumi.String(defaultBranch),
-			Repository: repo.ID(),
-		})
+			Repository: repo.Name,
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return nil, err
 		}
