@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pulumi/pulumi-github/sdk/v2/go/github"
-	"github.com/pulumi/pulumi/sdk/v2/go/pulumi"
+	"github.com/pulumi/pulumi-github/sdk/v4/go/github"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 type repository struct {
@@ -114,7 +114,6 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 			AllowSquashMerge:    pulumi.Bool(true),
 			Archived:            pulumi.Bool(false),
 			AutoInit:            pulumi.Bool(false),
-			DefaultBranch:       pulumi.String(defaultBranch),
 			DeleteBranchOnMerge: pulumi.Bool(true),
 			Description:         pulumi.String(repository.Description),
 			Name:                pulumi.String(repository.Name),
@@ -126,6 +125,13 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 			IsTemplate:          pulumi.Bool(false),
 			VulnerabilityAlerts: pulumi.BoolPtr(true),
 		}, pulumi.Provider(provider))
+		if err != nil {
+			return nil, err
+		}
+		_, err = github.NewBranchDefault(ctx, repository.Name, &github.BranchDefaultArgs{
+			Branch:     pulumi.String(defaultBranch),
+			Repository: repo.ID(),
+		})
 		if err != nil {
 			return nil, err
 		}
