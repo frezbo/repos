@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/pulumi/pulumi/sdk/v2/go/common/resource"
-	"github.com/pulumi/pulumi/sdk/v2/go/pulumi"
+	"github.com/pulumi/pulumi/sdk/v3/go/common/resource"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,12 +51,12 @@ func testEnvCleanup() {
 
 type mocks int
 
-func (mocks) NewResource(typeToken, name string, inputs resource.PropertyMap, provider, id string) (string, resource.PropertyMap, error) {
-	return name + "_id", inputs, nil
+func (mocks) NewResource(args pulumi.MockResourceArgs) (string, resource.PropertyMap, error) {
+	return args.Name + "_id", args.Inputs, nil
 }
 
-func (mocks) Call(token string, args resource.PropertyMap, provider string) (resource.PropertyMap, error) {
-	return args, nil
+func (mocks) Call(args pulumi.MockCallArgs) (resource.PropertyMap, error) {
+	return resource.PropertyMap{}, nil
 }
 
 func TestCreateRepositories(t *testing.T) {
@@ -68,9 +68,9 @@ func TestCreateRepositories(t *testing.T) {
 		wg.Add(len(repos))
 
 		for _, repo := range repos {
-			pulumi.All(repo.DefaultBranch).ApplyT(func(all []interface{}) error {
-				defaultBranch := all[0].(string)
-				assert.Equalf(t, "main", defaultBranch, "Expected default branch to be: %s", "main")
+			pulumi.All(repo.DeleteBranchOnMerge).ApplyT(func(all []interface{}) error {
+				deleteBranchOnMerge := all[0].(*bool)
+				assert.Equalf(t, deleteBranchOnMerge, &[]bool{true}[0], "Expected delete on merge to be: %s", "true")
 				wg.Done()
 				return nil
 			})
