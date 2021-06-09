@@ -10,10 +10,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type repository struct {
+type Repository struct {
 	Name        string
 	Description string
-	Secrets     []string
+	Secrets     *[]string
+	Template    *RepositoryTemplate
+}
+
+type RepositoryTemplate struct {
+	Owner      string
+	Repository string
 }
 
 const (
@@ -22,7 +28,7 @@ const (
 	pulumiTokenEnvVarName = "PULUMI_ACCESS_TOKEN"
 )
 
-var repositories = []repository{
+var repositories = []Repository{
 	{
 		Name:        "resume",
 		Description: "Repository to hold personal Resume",
@@ -38,7 +44,7 @@ var repositories = []repository{
 	{
 		Name:        "infra-dns",
 		Description: "Project to manage personal DNS",
-		Secrets: []string{
+		Secrets: &[]string{
 			"CLOUDFLARE_API_TOKEN",
 			"PULUMI_ACCESS_TOKEN",
 		},
@@ -46,7 +52,7 @@ var repositories = []repository{
 	{
 		Name:        "infra-do",
 		Description: "Project to manage DigitalOcean Resources",
-		Secrets: []string{
+		Secrets: &[]string{
 			"DIGITALOCEAN_TOKEN",
 			"PULUMI_ACCESS_TOKEN",
 		},
@@ -54,7 +60,7 @@ var repositories = []repository{
 	{
 		Name:        "docker-actions-test",
 		Description: "Project to test Multi-Arch docker builds and push to GHCR",
-		Secrets: []string{
+		Secrets: &[]string{
 			"GHCR_ACCESS_TOKEN",
 		},
 	},
@@ -73,8 +79,16 @@ var repositories = []repository{
 	{
 		Name:        "dockerfiles",
 		Description: "Leaner and more secure container images for personal use",
-		Secrets: []string{
+		Secrets: &[]string{
 			"GHCR_ACCESS_TOKEN",
+		},
+	},
+	{
+		Name:        "pulumi-provider-kind",
+		Description: "Pulumi proviider for KIND",
+		Template: &RepositoryTemplate{
+			Owner:      "pulumi",
+			Repository: "pulumi-provider-boilerplate",
 		},
 	},
 }
@@ -107,24 +121,31 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 		return nil, err
 	}
 	outputs := []*github.Repository{}
+	repositoryDefaultSettings := &github.RepositoryArgs{
+		AllowMergeCommit:    pulumi.Bool(true),
+		AllowRebaseMerge:    pulumi.Bool(true),
+		AllowSquashMerge:    pulumi.Bool(true),
+		Archived:            pulumi.Bool(false),
+		AutoInit:            pulumi.Bool(false),
+		DeleteBranchOnMerge: pulumi.Bool(true),
+		Visibility:          pulumi.String(repoVisibility),
+		HasDownloads:        pulumi.Bool(true),
+		HasIssues:           pulumi.Bool(true),
+		HasProjects:         pulumi.Bool(true),
+		HasWiki:             pulumi.Bool(true),
+		IsTemplate:          pulumi.Bool(false),
+		VulnerabilityAlerts: pulumi.BoolPtr(true),
+	}
 	for _, repository := range repositories {
-		repo, err := github.NewRepository(ctx, repository.Name, &github.RepositoryArgs{
-			AllowMergeCommit:    pulumi.Bool(true),
-			AllowRebaseMerge:    pulumi.Bool(true),
-			AllowSquashMerge:    pulumi.Bool(true),
-			Archived:            pulumi.Bool(false),
-			AutoInit:            pulumi.Bool(false),
-			DeleteBranchOnMerge: pulumi.Bool(true),
-			Description:         pulumi.String(repository.Description),
-			Name:                pulumi.String(repository.Name),
-			Visibility:          pulumi.String(repoVisibility),
-			HasDownloads:        pulumi.Bool(true),
-			HasIssues:           pulumi.Bool(true),
-			HasProjects:         pulumi.Bool(true),
-			HasWiki:             pulumi.Bool(true),
-			IsTemplate:          pulumi.Bool(false),
-			VulnerabilityAlerts: pulumi.BoolPtr(true),
-		}, pulumi.Provider(provider))
+		repositoryDefaultSettings.Description = pulumi.String(repository.Description)
+		repositoryDefaultSettings.Name = pulumi.String(repository.Name)
+		if repository.Template != nil {
+			repositoryDefaultSettings.Template = github.RepositoryTemplateArgs{
+				Owner:      pulumi.String(repository.Template.Owner),
+				Repository: pulumi.String(repository.Template.Repository),
+			}
+		}
+		repo, err := github.NewRepository(ctx, repository.Name, repositoryDefaultSettings, pulumi.Provider(provider))
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +158,7 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 		}
 		outputs = append(outputs, repo)
 		if repository.Secrets != nil {
-			for _, secretEnv := range repository.Secrets {
+			for _, secretEnv := range *repository.Secrets {
 				secretName := fmt.Sprintf("%s-%s", repository.Name, secretEnv)
 				_, err := github.NewActionsSecret(ctx, secretName, &github.ActionsSecretArgs{
 					PlaintextValue: pulumi.String(secretEnvFromRepo(repository.Name, secretEnv)),
