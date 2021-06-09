@@ -121,31 +121,17 @@ func createRepositories(ctx *pulumi.Context) ([]*github.Repository, error) {
 		return nil, err
 	}
 	outputs := []*github.Repository{}
-	repositoryDefaultSettings := &github.RepositoryArgs{
-		AllowMergeCommit:    pulumi.Bool(true),
-		AllowRebaseMerge:    pulumi.Bool(true),
-		AllowSquashMerge:    pulumi.Bool(true),
-		Archived:            pulumi.Bool(false),
-		AutoInit:            pulumi.Bool(false),
-		DeleteBranchOnMerge: pulumi.Bool(true),
-		Visibility:          pulumi.String(repoVisibility),
-		HasDownloads:        pulumi.Bool(true),
-		HasIssues:           pulumi.Bool(true),
-		HasProjects:         pulumi.Bool(true),
-		HasWiki:             pulumi.Bool(true),
-		IsTemplate:          pulumi.Bool(false),
-		VulnerabilityAlerts: pulumi.BoolPtr(true),
-	}
 	for _, repository := range repositories {
-		repositoryDefaultSettings.Description = pulumi.String(repository.Description)
-		repositoryDefaultSettings.Name = pulumi.String(repository.Name)
+		repoConfig := commonRepositoryConfig()
+		repoConfig.Description = pulumi.String(repository.Description)
+		repoConfig.Name = pulumi.String(repository.Name)
 		if repository.Template != nil {
-			repositoryDefaultSettings.Template = github.RepositoryTemplateArgs{
+			repoConfig.Template = github.RepositoryTemplateArgs{
 				Owner:      pulumi.String(repository.Template.Owner),
 				Repository: pulumi.String(repository.Template.Repository),
 			}
 		}
-		repo, err := github.NewRepository(ctx, repository.Name, repositoryDefaultSettings, pulumi.Provider(provider))
+		repo, err := github.NewRepository(ctx, repository.Name, repoConfig, pulumi.Provider(provider))
 		if err != nil {
 			return nil, err
 		}
@@ -193,4 +179,22 @@ func secretEnvFromRepo(repo string, secret string) string {
 	var repoNameUpper = strings.ToUpper(strings.ReplaceAll(repo, "-", "_"))
 	secretFromEnv := os.Getenv(fmt.Sprintf("%s_%s", repoNameUpper, secret))
 	return secretFromEnv
+}
+
+func commonRepositoryConfig() *github.RepositoryArgs {
+	return &github.RepositoryArgs{
+		AllowMergeCommit:    pulumi.Bool(true),
+		AllowRebaseMerge:    pulumi.Bool(true),
+		AllowSquashMerge:    pulumi.Bool(true),
+		Archived:            pulumi.Bool(false),
+		AutoInit:            pulumi.Bool(false),
+		DeleteBranchOnMerge: pulumi.Bool(true),
+		Visibility:          pulumi.String(repoVisibility),
+		HasDownloads:        pulumi.Bool(true),
+		HasIssues:           pulumi.Bool(true),
+		HasProjects:         pulumi.Bool(true),
+		HasWiki:             pulumi.Bool(true),
+		IsTemplate:          pulumi.Bool(false),
+		VulnerabilityAlerts: pulumi.BoolPtr(true),
+	}
 }
