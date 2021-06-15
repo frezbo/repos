@@ -85,11 +85,15 @@ var repositories = []Repository{
 	},
 	{
 		Name:        "pulumi-provider-kind",
-		Description: "Pulumi proviider for KIND",
+		Description: "Pulumi provider for KIND",
 		Template: &RepositoryTemplate{
 			Owner:      "pulumi",
 			Repository: "pulumi-provider-boilerplate",
 		},
+	},
+	{
+		Name:        "pulumi-aws-toolkit",
+		Description: "Pulumi AWS snippets for local development",
 	},
 }
 
