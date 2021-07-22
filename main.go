@@ -95,6 +95,10 @@ var repositories = []Repository{
 		Name:        "pulumi-aws-toolkit",
 		Description: "Pulumi AWS snippets for local development",
 	},
+	{
+		Name:        "irsa-anywhere",
+		Description: "IRSA on any kubernetes cluster",
+	},
 }
 
 func main() {
