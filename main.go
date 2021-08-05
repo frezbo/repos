@@ -99,6 +99,10 @@ var repositories = []Repository{
 		Name:        "irsa-anywhere",
 		Description: "IRSA on any kubernetes cluster",
 	},
+	{
+		Name:        "oci-static-website",
+		Description: "Serve a static page from an OCI image",
+	},
 }
 
 func main() {
