@@ -103,6 +103,10 @@ var repositories = []Repository{
 		Name:        "oci-static-website",
 		Description: "Serve a static page from an OCI image",
 	},
+	{
+		Name:        "gcp-workload-identity-federation-demo",
+		Description: "A very simple application to demonstrate workload identity federation in GCP",
+	},
 }
 
 func main() {
