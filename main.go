@@ -111,6 +111,14 @@ var repositories = []Repository{
 		Name:        "advent-of-code",
 		Description: "Just having some fun",
 	},
+	{
+		Name:        "pulumi-provider-talos",
+		Description: "Pulumi provider for Talos",
+		Template: &RepositoryTemplate{
+			Owner:      "pulumi",
+			Repository: "pulumi-provider-boilerplate",
+		},
+	},
 }
 
 func main() {
