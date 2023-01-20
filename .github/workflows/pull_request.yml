@@ -18,7 +18,7 @@ jobs:
         env:
           PERSONAL_ACCESS_TOKEN: "dummy-token"
       - uses: pulumi/action-install-pulumi-cli@v2
-      - uses: pulumi/actions@v3
+      - uses: pulumi/actions@v4
         with:
           command: preview
           stack-name: prod

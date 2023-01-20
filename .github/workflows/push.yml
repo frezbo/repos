@@ -16,7 +16,7 @@ jobs:
           stable: true
           go-version: '1.17.2'
       - uses: pulumi/action-install-pulumi-cli@v2
-      - uses: pulumi/actions@v3
+      - uses: pulumi/actions@v4
         with:
           command: up
           stack-name: prod
